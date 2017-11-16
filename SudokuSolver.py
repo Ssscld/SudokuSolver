@@ -27,17 +27,86 @@ number of the number 'n1' in the sudoku grid. Remember the grid is 0 indexed fro
 The output file format will be ca 9x9 grid. Each row will have a comma separated list of solved 
 grid column number and the file itself will have 9 rows. 
 
+Setup: 
+Script was developed in Python 3.4 but anything about python 3 will do. 
+The command line version has 
+SudokuSolver.py
+a puzzles directory with files easy-1.txt and a generated file easy-1-solved.txt
+
+filenames are hardcoded (for now, at least) as the needs for this script are to serve as a 
+simple backend engine for a web-app. So I have a lot more else to worry about. But i kept it
+structured enough to make it customizable in the future
+
+Git Repo link: 
+
+
 '''
 
 INPUT_FILE = 'puzzles\\easy-1.txt'
-OUTPUT_FILE='puzzles\\easu-1-solved.txt'
+OUTPUT_FILE='puzzles\\easy-1-solved.txt'
 
+GRID_SIZE = 9 #Enable scalability to larger grids 
+
+_mygrid = []
+
+def initialize(grid = _mygrid):
+
+	for i in range(GRID_SIZE): 
+		grid.append([0 for _ in range (GRID_SIZE)])
+
+
+def print_grid(grid=_mygrid, msg = ''): 
+	_dashes = '-'*(len(msg)+3)+'\n' if len(msg) >21 else '_'*21+'\n'
+	print(_dashes+msg+'\n'+_dashes)
+	
+	for i in range(GRID_SIZE):
+
+		for j in range(GRID_SIZE): 
+			print (grid[i][j], end = ' ')
+			if (j+1)%3 == 0:
+				print('  ', end = '')
+
+		print()
+	
+		if (i+1)%3 == 0:
+			print()
+	print(_dashes+'\n')
+
+def create_grid_from_file(grid = _mygrid):
+	with open (INPUT_FILE,'r') as f:
+		for each in f:
+			nos =  list(map(int, each.split()))
+			grid[nos[0]][nos[1]] = nos[2]
+
+def write_grid_to_file(grid=_mygrid):
+	with open (OUTPUT_FILE, 'w') as f:
+		line = ''
+		for i in range(GRID_SIZE):
+			
+			for j in range(GRID_SIZE): 
+				line += str(grid[i][j]) + ' '
+			
+				if (j+1)%3 == 0:
+					line += ' '
+
+			line += '\n'
+		
+			if (i+1)%3 == 0:
+				line += '\n'
+		f.write(line)
 
 def main():
-	with open (INPUT_FILE,'r') as f:
-		for each in f: 
-			print (each)
+	
+	# initialize grid
+	initialize()
+	# print_grid()
 
+	# read from file
+	create_grid_from_file()
+	print_grid(msg = 'after first creating grid')
+
+	#write grid to file
+	write_grid_to_file()
 
 if __name__ == '__main__':
 	main()
