@@ -48,11 +48,39 @@ OUTPUT_FILE='puzzles\\easy-1-solved.txt'
 GRID_SIZE = 9 #Enable scalability to larger grids 
 
 _mygrid = []
+_mymap = {} 
+
+REGION_NOS = [1,4,7]
+
+_solved = False
+
+def _initialize_region_in_map(tRegion):
+	'''
+	accepts a tuple(one of region no, one of region no) - a region is defined by its 0-indexed center cell
+	initializes the map with region cell no with region +/- 1 or +0	ie it 
+	adds a list (1-9) to _mymap
+
+	'''
+	
+	for i in [-1,0,1]:
+		for j in [-1,0,1]:
+			_mymap[(tRegion[0]+i, tRegion[1] +j)] = list(range(1,10))
+	
 
 def initialize(grid = _mygrid):
 
+	_mygrid = []
+	_mymap = {}
+
+	_solved = False
+
+	for each_region_i in REGION_NOS:
+		for each_region_j in REGION_NOS: 
+			_initialize_region_in_map((each_region_i, each_region_j))
+
 	for i in range(GRID_SIZE): 
 		grid.append([0 for _ in range (GRID_SIZE)])
+
 
 
 def print_grid(grid=_mygrid, msg = ''): 
@@ -72,11 +100,13 @@ def print_grid(grid=_mygrid, msg = ''):
 			print()
 	print(_dashes+'\n')
 
+
 def create_grid_from_file(grid = _mygrid):
 	with open (INPUT_FILE,'r') as f:
 		for each in f:
 			nos =  list(map(int, each.split()))
 			grid[nos[0]][nos[1]] = nos[2]
+
 
 def write_grid_to_file(grid=_mygrid):
 	with open (OUTPUT_FILE, 'w') as f:
@@ -95,18 +125,48 @@ def write_grid_to_file(grid=_mygrid):
 				line += '\n'
 		f.write(line)
 
+def solve_grid(grid = _mygrid):
+	pass
+
+def _get_region_center(row, col):
+	_cRow, _cCol = 0,0
+	
+	if row <= 2: 
+		_cRow = 1
+	elif row <= 5: 
+		_cRow = 4
+	else: 
+		_cRow =7
+
+	if col <= 2: 
+		_cCol = 1
+	elif col <= 5: 
+		_cCol = 4
+	else: 
+		_cCol =7
+
+	# print('_get_region_center: received {}, {}   returrning  {}, {}'.format(row, col, _cRow, _cCol))
+	return (_cRow, _cCol)
+	
+
+
+def insert_number_update_map(number = 0, location = (0,0), firstpass = False):
+	if firstpass:
+		pass
+
 def main():
 	
 	# initialize grid
 	initialize()
-	# print_grid()
 
 	# read from file
 	create_grid_from_file()
-	print_grid(msg = 'after first creating grid')
+#	print_grid(msg = 'after first creating grid')
 
+	solve_grid()
 	#write grid to file
 	write_grid_to_file()
 
 if __name__ == '__main__':
 	main()
+
